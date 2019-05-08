@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<script>
+		const handleFileUpload = (selector, handler) => {
+			document.addEventListener("DOMContentLoaded", () => {
+				document.querySelector(selector).addEventListener("change", (event) => {
+					const files = event.currentTarget.files;
+					if (files.length) {
+						handler(files[0]);
+					}
+				})
+			})
+		}
+
+		handleFileUpload("#put", async (file) => {
+			const {url} = await (await fetch(`/sign_put?contentType=${file.type}`)).json();
+			await fetch(url, {
+				method: "PUT",
+				body: file,
+			})
+		});
+
+		handleFileUpload("#post", async (file) => {
+			const data = await (await fetch("/sign_post")).json();
+
+			const formData = new FormData();
+			formData.append("Content-Type", file.type);
+			formData.append("x-amz-meta-userid", "user1");
+			Object.entries(data.fields).forEach(([k, v]) => {
+				formData.append(k, v);
+			});
+			formData.append("file", file);
+
+			await fetch(data.url, {
+				method: "POST",
+				body: formData,
+			});
+		});
+	</script>
+</head>
+<body>
+	<h2>PUT</h2>
+	<input id="put" type="file"/>
+	<h3>POST</h3>
+	<input id="post" type="file"/>
+</body>
+</html>
