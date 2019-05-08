@@ -32,7 +32,7 @@
 			Object.entries(data.fields).forEach(([k, v]) => {
 				formData.append(k, v);
 			});
-			formData.append("file", file);
+			formData.append("file", file); // must be the last one
 
 			await fetch(data.url, {
 				method: "POST",
