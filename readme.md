@@ -2,7 +2,7 @@
 * run.sh
 * teardown.sh
 
-Try uploading images and non-images too. Also try to upload images >2MBs.
+Try uploading images and non-images too. Also try to upload images >1MBs.
 
 ```
 aws s3api head-object --bucket $BUCKETNAME --key $KEY
