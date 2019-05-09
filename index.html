@@ -28,7 +28,6 @@
 
 			const formData = new FormData();
 			formData.append("Content-Type", file.type);
-			formData.append("x-amz-meta-userid", "user1");
 			Object.entries(data.fields).forEach(([k, v]) => {
 				formData.append(k, v);
 			});
@@ -42,6 +41,7 @@
 	</script>
 </head>
 <body>
+	<p>Only accepts images. Try uploading something else</p>
 	<h2>PUT</h2>
 	<input id="put" type="file"/>
 	<h3>POST</h3>
