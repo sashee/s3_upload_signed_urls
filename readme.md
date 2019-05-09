@@ -1,5 +1,6 @@
 * setup.sh
 * run.sh
+* localhost:3000
 * teardown.sh
 
 Try uploading images and non-images too. Also try to upload images >1MBs.
