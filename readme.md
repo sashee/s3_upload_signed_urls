@@ -21,8 +21,18 @@ To learn more about how to upload files using S3 signed URLs read these articles
 
 The two file inputs work differently, the top one using PUT requests and the ```getSignedUrlPromise("putObject",...)``` call, while the other one uses POST ones with ```createPresignedPost(...)```.
 
-The former has some shortcomings, which can be tested using these inputs:
+![](docs/inputs.png)
 
-* The maximum file size can not be set
-* The content type must be known when the URL is signed, so the browser must send it to the backend
+PUT URLs has some shortcomings, which can be tested using these inputs:
+
+* The maximum file size can not be set, while POST URLs can have a range of accepted bytes
+* The content type must be known when the URL is signed, so the browser must send it to the backend, while for POST URLs a prefix can be enforced
 * No metadata can be added to the object, so things like the uploading user must be part of the key
+
+The generated key and the metadata can be inspected with the object list on the bottom of the page:
+
+![](docs/list.png)
+
+The bottom object is uploaded using the PUT method, and the userId (a generated dummy string, unique for each upload) is part of the object key. The code that sets it is [here](https://github.com/sashee/s3_upload_signed_urls/blob/master/index.js#L61).
+
+The top object used the POST method. The key is entirely random and the metadata associated with the object contains the userId. The backend code that handles this is [here](https://github.com/sashee/s3_upload_signed_urls/blob/master/index.js#L77).
