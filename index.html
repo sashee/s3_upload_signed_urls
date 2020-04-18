@@ -16,7 +16,7 @@
 		}
 
 		handleFileUpload("#put", async (file) => {
-			const {url} = await (await fetch(`/sign_put?contentType=${file.type}`)).json();
+			const {url} = await (await fetch(`sign_put?contentType=${file.type}`)).json();
 			await fetch(url, {
 				method: "PUT",
 				body: file,
@@ -24,7 +24,7 @@
 		});
 
 		handleFileUpload("#post", async (file) => {
-			const data = await (await fetch("/sign_post")).json();
+			const data = await (await fetch("sign_post")).json();
 
 			const formData = new FormData();
 			formData.append("Content-Type", file.type);
@@ -48,5 +48,18 @@
 	<h3>POST</h3>
 	<p>accepts only &lt;1MB</p>
 	<input id="post" type="file"/>
+	<h2>List objects</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Key</th>
+			<th>Last modified</th>
+			<th>Size</th>
+			<th>Content Type</th>
+			<th>Metadata</th>
+		</tr>
+		<tbody>$$BUCKET_CONTENTS$$</tbody>
+	</thead>
+</table>
 </body>
 </html>
