@@ -28,7 +28,7 @@ module.exports.handler = async (event) => {
 			};
 		}));
 
-		const table = contents.sort((a, b) => a.lastModified < b.lastModified ? -1 : a.lastModified > b.lastModified ? 1 : 0).reverse().map(({key, lastModified, size, metadata, contentType}) => {
+		const table = contents.length > 0 ? contents.sort((a, b) => a.lastModified < b.lastModified ? -1 : a.lastModified > b.lastModified ? 1 : 0).reverse().map(({key, lastModified, size, metadata, contentType}) => {
 			return `
 <tr>
 	<td>${key}</td>
@@ -40,7 +40,7 @@ module.exports.handler = async (event) => {
 	</td>
 </tr>
 			`;
-		}).join("");
+		}).join("") : "<tr><td colspan=\"5\">No files uploaded</td></tr>";
 
 		const withContents = html.replace("$$BUCKET_CONTENTS$$", table);
 

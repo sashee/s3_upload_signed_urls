@@ -6,25 +6,45 @@
 	<script>
 		const handleFileUpload = (selector, handler) => {
 			document.addEventListener("DOMContentLoaded", () => {
-				document.querySelector(selector).addEventListener("change", (event) => {
+				const element = document.querySelector(selector);
+				element.addEventListener("change", async (event) => {
+					const logElement = document.querySelector("#log");
 					const files = event.currentTarget.files;
 					if (files.length) {
-						handler(files[0]);
+						logElement.innerText += "Uploading file...";
+						try {
+							await handler(files[0]);
+							logElement.innerText += "Upload successful. Reload the page to see the file";
+						}catch (e) {
+							logElement.innerText += "An error happened (check the console)";
+							console.error(e);
+						}
 					}
 				})
 			})
 		}
 
 		handleFileUpload("#put", async (file) => {
-			const {url} = await (await fetch(`sign_put?contentType=${file.type}`)).json();
-			await fetch(url, {
+			const urlRes = await fetch(`sign_put?contentType=${file.type}`);
+			if (!urlRes.ok) {
+				throw urlRes;
+			}
+			const {url} = await urlRes.json();
+			const res = await fetch(url, {
 				method: "PUT",
 				body: file,
-			})
+			});
+			if (!res.ok) {
+				throw res;
+			}
 		});
 
 		handleFileUpload("#post", async (file) => {
-			const data = await (await fetch("sign_post")).json();
+			const dataRes = await fetch("sign_post");
+			if (!dataRes.ok) {
+				throw dataRes;
+			}
+			const data = await dataRes.json();
 
 			const formData = new FormData();
 			formData.append("Content-Type", file.type);
@@ -33,15 +53,20 @@
 			});
 			formData.append("file", file); // must be the last one
 
-			await fetch(data.url, {
+			const postRes = await fetch(data.url, {
 				method: "POST",
 				body: formData,
 			});
+
+			if (!postRes.ok) {
+				throw postRes;
+			}
 		});
 	</script>
 </head>
 <body>
-	<p>Only accepts images. Try uploading something else and see it fail</p>
+	<div id="log"></div>
+	<p>Both inputs accept only images.</p>
 	<h2>PUT</h2>
 	<p>accepts any size</p>
 	<input id="put" type="file"/>
@@ -49,17 +74,17 @@
 	<p>accepts only &lt;1MB</p>
 	<input id="post" type="file"/>
 	<h2>List objects</h2>
-<table>
-	<thead>
-		<tr>
-			<th>Key</th>
-			<th>Last modified</th>
-			<th>Size</th>
-			<th>Content Type</th>
-			<th>Metadata</th>
-		</tr>
-		<tbody>$$BUCKET_CONTENTS$$</tbody>
-	</thead>
-</table>
+	<table>
+		<thead>
+			<tr>
+				<th>Key</th>
+				<th>Last modified</th>
+				<th>Size</th>
+				<th>Content Type</th>
+				<th>Metadata</th>
+			</tr>
+			<tbody>$$BUCKET_CONTENTS$$</tbody>
+		</thead>
+	</table>
 </body>
 </html>

@@ -6,7 +6,7 @@ provider "aws" {
 resource "aws_s3_bucket" "bucket" {
   force_destroy = "true"
   cors_rule {
-    allowed_methods = ["GET", "POST", "PUT"]
+    allowed_methods = ["POST", "PUT"]
     allowed_origins = ["*"]
 		allowed_headers = ["*"]
   }
