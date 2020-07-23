@@ -60,8 +60,11 @@ module.exports.handler = async (event) => {
 
 		const url = await s3.getSignedUrlPromise("putObject", {
 			Bucket: process.env.BUCKET,
-			Key: `${userid}-${getRandomFilename()}`, // add a part with the userid!
+			Key: getRandomFilename(), // random
 			ContentType: contentType,
+			Metadata: {
+				"userid": userid, // tag with userid
+			},
 			// can not set restrictions to the length of the content
 		});
 		return {
